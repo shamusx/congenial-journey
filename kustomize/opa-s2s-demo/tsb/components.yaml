@@ -1,0 +1,36 @@
+apiVersion: tsb.tetrate.io/v2
+kind: Tenant
+metadata:
+  name: httpbin
+  annotations:
+    tsb.tetrate.io/organization: tetrate
+spec:
+  description: httpbin
+  displayName: httpbin
+---
+apiVersion: tsb.tetrate.io/v2
+kind: Workspace
+metadata:
+  annotations:
+    tsb.tetrate.io/organization: tetrate
+    tsb.tetrate.io/tenant: httpbin
+  name: httpbin-opa
+spec:
+  displayName: httpbin-opa
+  namespaceSelector:
+    names:
+      - "*/httpbin-opa"
+---
+apiVersion: security.tsb.tetrate.io/v2
+kind: Group
+metadata:
+  annotations:
+    tsb.tetrate.io/organization: tetrate
+    tsb.tetrate.io/tenant: httpbin
+    tsb.tetrate.io/workspace: httpbin-opa
+  name: httpbin-opa-security
+spec:
+  namespaceSelector:
+    names:
+      - "*/httpbin-opa"
+  configMode: BRIDGED

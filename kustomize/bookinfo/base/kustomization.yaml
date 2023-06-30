@@ -1,0 +1,9 @@
+# kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: bookinfo
+resources:
+- https://raw.githubusercontent.com/istio/istio/release-1.17/samples/bookinfo/platform/kube/bookinfo.yaml
+- bookinfo-ns.yaml
+- ingressgateway.yaml
+- bookinfo-cert.yaml

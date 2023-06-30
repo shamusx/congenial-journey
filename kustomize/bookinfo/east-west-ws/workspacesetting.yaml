@@ -1,0 +1,20 @@
+apiVersion: tsb.tetrate.io/v2
+kind: WorkspaceSetting
+metadata:
+  name: default
+  namespace: bookinfo
+  annotations:
+    tsb.tetrate.io/organization: tetrate
+    tsb.tetrate.io/tenant: dev
+    tsb.tetrate.io/workspace: bookinfo-ws
+spec:
+  defaultEastWestGatewaySettings:
+    - workloadSelector:
+        namespace: bookinfo
+        labels:
+          app: bookinfo-igw
+      exposedServices:
+      - serviceLabels:
+          app: productpage
+      - serviceLabels:
+          app: details

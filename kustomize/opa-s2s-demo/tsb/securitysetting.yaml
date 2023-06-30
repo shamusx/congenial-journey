@@ -1,0 +1,15 @@
+apiVersion: security.tsb.tetrate.io/v2
+kind: SecuritySetting
+metadata:
+  annotations:
+    tsb.tetrate.io/organization: tetrate
+    tsb.tetrate.io/tenant: httpbin
+    tsb.tetrate.io/workspace: httpbin-opa
+    tsb.tetrate.io/securityGroup: httpbin-opa-security
+  name: httpbin-security-settings
+spec:
+  authorization:
+    mode: CLUSTER
+    http:
+      external:
+        uri: "grpc://opa.opa-s2s.svc.cluster.local:9191"

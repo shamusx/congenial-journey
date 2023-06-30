@@ -1,0 +1,101 @@
+---
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: tsb.tetrate.io/v2
+    kind: Tenant
+    metadata:
+      name: httpbin
+      annotations:
+        tsb.tetrate.io/organization: tetrate
+    spec:
+      description: httpbin
+      displayName: httpbin
+  - apiVersion: tsb.tetrate.io/v2
+    kind: Workspace
+    metadata:
+      name: httpbin-ws
+      annotations:
+        tsb.tetrate.io/organization: tetrate
+        tsb.tetrate.io/tenant: httpbin
+    spec:
+      namespaceSelector:
+        names:
+          - "*/httpbin"
+          - "*/httpbin-ig"
+  - apiVersion: gateway.tsb.tetrate.io/v2
+    kind: Group
+    metadata:
+      name: httpbin-ig-gg
+      annotations:
+        tsb.tetrate.io/organization: tetrate
+        tsb.tetrate.io/tenant: httpbin
+        tsb.tetrate.io/workspace: httpbin-ws
+    spec:
+      namespaceSelector:
+        names:
+          - "*/httpbin-ig"
+  - apiVersion: gateway.tsb.tetrate.io/v2
+    kind: Group
+    metadata:
+      name: httpbin-gg
+      annotations:
+        tsb.tetrate.io/organization: tetrate
+        tsb.tetrate.io/tenant: httpbin
+        tsb.tetrate.io/workspace: httpbin-ws
+    spec:
+      namespaceSelector:
+        names:
+          - "*/httpbin"
+      configMode: BRIDGED
+  - apiVersion: traffic.tsb.tetrate.io/v2
+    kind: Group
+    metadata:
+      name: httpbin-tg
+      annotations:
+        tsb.tetrate.io/organization: tetrate
+        tsb.tetrate.io/tenant: httpbin
+        tsb.tetrate.io/workspace: httpbin-ws
+    spec:
+      namespaceSelector:
+        names:
+          - "*/httpbin"
+          - "*/httpbin-ig"
+      configMode: BRIDGED
+  - apiVersion: security.tsb.tetrate.io/v2
+    kind: Group
+    metadata:
+      name: httpbin-sg
+      annotations:
+        tsb.tetrate.io/organization: tetrate
+        tsb.tetrate.io/tenant: httpbin
+        tsb.tetrate.io/workspace: httpbin-ws
+    spec:
+      namespaceSelector:
+        names:
+          - "*/httpbin"
+          - "*/httpbin-ig"
+      configMode: BRIDGED
+  - apiVersion: gateway.tsb.tetrate.io/v2
+    kind: IngressGateway
+    metadata:
+      name: httpbin-igw
+      annotations:
+        tsb.tetrate.io/organization: tetrate
+        tsb.tetrate.io/tenant: httpbin
+        tsb.tetrate.io/workspace: httpbin-ws
+        tsb.tetrate.io/gatewayGroup: httpbin-ig-gg
+    spec:
+      workloadSelector:
+        namespace: httpbin-ig
+        labels:
+          app: httpbin-igw
+      http:
+        - name: productpage
+          port: 80
+          hostname: "httpbin.tetrate.io"
+          routing:
+            rules:
+              - route:
+                  host: "httpbin/httpbin.httpbin.svc.cluster.local"
+                  port: 9080

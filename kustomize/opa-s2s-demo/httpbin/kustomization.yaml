@@ -1,0 +1,8 @@
+# kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: httpbin-opa
+resources:
+- namespace.yaml
+- https://raw.githubusercontent.com/istio/istio/master/samples/sleep/sleep.yaml
+- https://raw.githubusercontent.com/istio/istio/master/samples/httpbin/httpbin.yaml

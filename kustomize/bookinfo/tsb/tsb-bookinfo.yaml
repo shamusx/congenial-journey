@@ -1,0 +1,101 @@
+---
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: tsb.tetrate.io/v2
+    kind: Tenant
+    metadata:
+      name: dev
+      annotations:
+        tsb.tetrate.io/organization: tetrate
+    spec:
+      description: dev
+      displayName: dev
+  - apiVersion: tsb.tetrate.io/v2
+    kind: Workspace
+    metadata:
+      name: bookinfo-ws
+      annotations:
+        tsb.tetrate.io/organization: tetrate
+        tsb.tetrate.io/tenant: dev
+    spec:
+      namespaceSelector:
+        names:
+          - "*/bookinfo"
+          - "*/bookinfo-tier1"
+  - apiVersion: gateway.tsb.tetrate.io/v2
+    kind: Group
+    metadata:
+      name: bookinfo-tier1-gg
+      annotations:
+        tsb.tetrate.io/organization: tetrate
+        tsb.tetrate.io/tenant: dev
+        tsb.tetrate.io/workspace: bookinfo-ws
+    spec:
+      namespaceSelector:
+        names:
+          - "*/bookinfo-tier1"
+  - apiVersion: gateway.tsb.tetrate.io/v2
+    kind: Group
+    metadata:
+      name: bookinfo-gg
+      annotations:
+        tsb.tetrate.io/organization: tetrate
+        tsb.tetrate.io/tenant: dev
+        tsb.tetrate.io/workspace: bookinfo-ws
+    spec:
+      namespaceSelector:
+        names:
+          - "*/bookinfo"
+      configMode: BRIDGED
+  - apiVersion: traffic.tsb.tetrate.io/v2
+    kind: Group
+    metadata:
+      name: bookinfo-tg
+      annotations:
+        tsb.tetrate.io/organization: tetrate
+        tsb.tetrate.io/tenant: dev
+        tsb.tetrate.io/workspace: bookinfo-ws
+    spec:
+      namespaceSelector:
+        names:
+          - "*/bookinfo"
+          - "*/bookinfo-tier1"
+      configMode: BRIDGED
+  - apiVersion: security.tsb.tetrate.io/v2
+    kind: Group
+    metadata:
+      name: bookinfo-sg
+      annotations:
+        tsb.tetrate.io/organization: tetrate
+        tsb.tetrate.io/tenant: dev
+        tsb.tetrate.io/workspace: bookinfo-ws
+    spec:
+      namespaceSelector:
+        names:
+          - "*/bookinfo"
+          - "*/bookinfo-tier1"
+      configMode: BRIDGED
+  - apiVersion: gateway.tsb.tetrate.io/v2
+    kind: IngressGateway
+    metadata:
+      name: bookinfo-igw
+      annotations:
+        tsb.tetrate.io/organization: tetrate
+        tsb.tetrate.io/tenant: dev
+        tsb.tetrate.io/workspace: bookinfo-ws
+        tsb.tetrate.io/gatewayGroup: bookinfo-gg
+    spec:
+      workloadSelector:
+        namespace: bookinfo
+        labels:
+          app: bookinfo-igw
+      http:
+        - name: productpage
+          port: 80
+          hostname: "bookinfo.tetrate.io"
+          routing:
+            rules:
+              - route:
+                  host: "bookinfo/productpage.bookinfo.svc.cluster.local"
+                  port: 9080

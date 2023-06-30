@@ -16,6 +16,7 @@ metadata:
   namespace: fluxprod-bookinfo
 spec:
   interval: 5m
+  prune: true
   path: ./fluxcd-demo/app/bookinfo
   sourceRef:
     kind: GitRepository
